@@ -72,9 +72,9 @@ const equipmentSchema = new mongoose.Schema(
       of: String,
       default: {},
     },
-    minimumRentalDays: {
+    maximumRentalDays: {
       type: Number,
-      default: 1,
+      default: 7,
       min: 1,
     },
     depositAmount: {
