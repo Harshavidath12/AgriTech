@@ -93,12 +93,13 @@ const createBooking = async (req, res, next) => {
 
     // ─── Calculate total cost ──────────────────────────────────────────────────
     const msPerDay = 1000 * 60 * 60 * 24;
-    const durationDays = Math.ceil((end - start) / msPerDay);
+    const durationDays = Math.ceil((end - start) / msPerDay) + 1;
 
-    if (durationDays < equipment.minimumRentalDays) {
+    // Validate duration against maximum allowed days
+    if (durationDays > equipment.maximumRentalDays) {
       return res.status(400).json({
         success: false,
-        message: `Minimum rental period is ${equipment.minimumRentalDays} day(s)`,
+        message: `This is allowed to rent only for ${equipment.maximumRentalDays} no of days`,
       });
     }
 
