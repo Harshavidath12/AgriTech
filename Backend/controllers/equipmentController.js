@@ -148,7 +148,7 @@ const createEquipment = async (req, res, next) => {
     const {
       title, description, category, dailyRate,
       images, location, specifications,
-      minimumRentalDays, depositAmount,
+      maximumRentalDays, depositAmount,
     } = req.body;
 
     const equipment = await Equipment.create({
@@ -160,7 +160,7 @@ const createEquipment = async (req, res, next) => {
       location,
       ownerId: req.user._id, // Set from authenticated user
       specifications,
-      minimumRentalDays,
+      maximumRentalDays,
       depositAmount,
     });
 
