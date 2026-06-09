@@ -33,7 +33,7 @@ const EquipmentCard = ({ equipment, onBook }) => {
     location,
     ownerId,
     isAvailable,
-    minimumRentalDays,
+    maximumRentalDays,
   } = equipment;
 
   const categoryIcon = CATEGORY_ICONS[category] || '⚙️';
@@ -98,11 +98,11 @@ const EquipmentCard = ({ equipment, onBook }) => {
           </div>
         )}
 
-        {/* Min rental */}
-        {minimumRentalDays > 1 && (
-          <div className="flex items-center gap-1 text-gray-500 text-xs mb-3">
-            <Clock className="w-3 h-3" />
-            <span>Min. {minimumRentalDays} days</span>
+        {/* Max rental */}
+        {maximumRentalDays > 0 && (
+          <div className="flex items-center gap-1.5 mt-2 text-gray-500 text-xs">
+            <Clock className="w-3.5 h-3.5" />
+            <span>Max. {maximumRentalDays} days</span>
           </div>
         )}
 
