@@ -28,9 +28,7 @@ const MarketplacePage = () => {
 
   // ─── Search State ─────────────────────────────────────────────────────────
   const [category, setCategory] = useState(searchParams.get('category') || 'All');
-  const [radius, setRadius] = useState(50);
-  const [searchLat, setSearchLat] = useState('');
-  const [searchLng, setSearchLng] = useState('');
+  const [searchCity, setSearchCity] = useState('');
   const [minRate, setMinRate] = useState('');
   const [maxRate, setMaxRate] = useState('');
   const [mapCenter, setMapCenter] = useState(null);
@@ -47,12 +45,8 @@ const MarketplacePage = () => {
 
       let url = '/equipment';
 
-      if (searchLat && searchLng) {
-        url = '/equipment/search';
-        params.lat = searchLat;
-        params.lng = searchLng;
-        params.radius = radius;
-        setMapCenter({ lat: parseFloat(searchLat), lng: parseFloat(searchLng) });
+      if (searchCity) {
+        params.city = searchCity;
       }
 
       const { data } = await axiosInstance.get(url, { params });
@@ -63,25 +57,11 @@ const MarketplacePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [category, searchLat, searchLng, radius, minRate, maxRate, page]);
+  }, [category, searchCity, minRate, maxRate, page]);
 
   useEffect(() => { fetchEquipment(); }, [fetchEquipment]);
 
-  // Get user's current location
-  const useMyLocation = () => {
-    if (!navigator.geolocation) {
-      toast.error('Geolocation not supported');
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setSearchLat(pos.coords.latitude.toFixed(6));
-        setSearchLng(pos.coords.longitude.toFixed(6));
-        toast.success('Location detected!');
-      },
-      () => toast.error('Could not get your location')
-    );
-  };
+
 
   const handleBookClick = async (item) => {
     setSelectedEquipment(item);
@@ -103,48 +83,21 @@ const MarketplacePage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap items-center gap-3">
 
-            {/* Coordinate search */}
+            {/* City search */}
             <div className="flex items-center gap-2 flex-1 min-w-[200px]">
               <div className="relative flex-1">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <input
-                  id="search-lat"
-                  type="number"
-                  step="any"
-                  value={searchLat}
-                  onChange={(e) => setSearchLat(e.target.value)}
+                  id="search-city"
+                  type="text"
+                  value={searchCity}
+                  onChange={(e) => setSearchCity(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && (setPage(1), fetchEquipment())}
                   className="form-input pl-9 !py-2 text-sm"
-                  placeholder="Latitude"
+                  placeholder="Enter city or location..."
                 />
               </div>
-              <div className="relative flex-1">
-                <input
-                  id="search-lng"
-                  type="number"
-                  step="any"
-                  value={searchLng}
-                  onChange={(e) => setSearchLng(e.target.value)}
-                  className="form-input !py-2 text-sm"
-                  placeholder="Longitude"
-                />
-              </div>
-              <button onClick={useMyLocation}
-                className="btn-secondary !py-2 !px-3 flex-shrink-0 text-xs whitespace-nowrap">
-                <MapPin className="w-3.5 h-3.5" />
-              </button>
             </div>
-
-            {/* Radius */}
-            <select
-              id="search-radius"
-              value={radius}
-              onChange={(e) => setRadius(parseInt(e.target.value))}
-              className="form-input !py-2 !w-auto text-sm"
-            >
-              {RADIUS_OPTIONS.map((r) => (
-                <option key={r} value={r}>{r} km</option>
-              ))}
-            </select>
 
             {/* Search Button */}
             <button
@@ -201,7 +154,7 @@ const MarketplacePage = () => {
                 <input type="number" value={maxRate} onChange={(e) => setMaxRate(e.target.value)}
                   className="form-input !py-1.5 !w-24 text-sm" placeholder="Max ₹" />
               </div>
-              <button onClick={() => { setCategory('All'); setMinRate(''); setMaxRate(''); setSearchLat(''); setSearchLng(''); setMapCenter(null); setPage(1); }}
+              <button onClick={() => { setCategory('All'); setMinRate(''); setMaxRate(''); setSearchCity(''); setMapCenter(null); setPage(1); }}
                 className="text-xs text-gray-500 hover:text-red-400 flex items-center gap-1 transition-colors">
                 <X className="w-3 h-3" /> Clear
               </button>
@@ -216,7 +169,7 @@ const MarketplacePage = () => {
           <p className="text-gray-400 text-sm">
             {loading ? 'Searching...' : `${pagination.total || equipment.length} equipment found`}
             {category !== 'All' && <span className="ml-2 text-primary-400">· {category}</span>}
-            {searchLat && searchLng && <span className="ml-2 text-earth-400">· Within {radius}km</span>}
+            {searchCity && <span className="ml-2 text-earth-400">· In {searchCity}</span>}
           </p>
         </div>
       </div>
@@ -237,7 +190,7 @@ const MarketplacePage = () => {
                 <div className="text-center py-16 text-gray-500">
                   <div className="text-5xl mb-4">🔍</div>
                   <p className="font-medium text-gray-400">No equipment found</p>
-                  <p className="text-sm mt-1">Try adjusting your filters or radius</p>
+                  <p className="text-sm mt-1">Try adjusting your filters or search location</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -253,7 +206,7 @@ const MarketplacePage = () => {
               <EquipmentMap
                 equipment={equipment}
                 center={mapCenter}
-                radius={radius}
+                radius={50}
                 onMarkerClick={handleBookClick}
               />
             </div>
@@ -281,7 +234,7 @@ const MarketplacePage = () => {
             <EquipmentMap
               equipment={equipment}
               center={mapCenter}
-              radius={radius}
+              radius={50}
               onMarkerClick={handleBookClick}
             />
           </div>
