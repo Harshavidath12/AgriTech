@@ -31,7 +31,7 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
       description: existing?.description || '',
       category: existing?.category || 'Tractor',
       dailyRate: existing?.dailyRate || '',
-      minimumRentalDays: existing?.minimumRentalDays || 1,
+      maximumRentalDays: existing?.maximumRentalDays || 7,
       depositAmount: existing?.depositAmount || 0,
       address: existing?.location?.address || '',
       city: existing?.location?.city || '',
@@ -60,7 +60,7 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
         description: data.description,
         category: data.category,
         dailyRate: parseFloat(data.dailyRate),
-        minimumRentalDays: parseInt(data.minimumRentalDays),
+        maximumRentalDays: parseInt(data.maximumRentalDays),
         depositAmount: parseFloat(data.depositAmount) || 0,
         images: imageUrls,
         location: {
@@ -138,8 +138,8 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
           {errors.dailyRate && <p className="text-red-400 text-xs mt-1">{errors.dailyRate.message}</p>}
         </div>
         <div>
-          <label className="form-label">Min. Rental Days</label>
-          <input type="number" {...register('minimumRentalDays')} className="form-input" min="1" />
+          <label className="form-label">Max. Rental Days</label>
+          <input type="number" {...register('maximumRentalDays')} className="form-input" min="1" />
         </div>
         <div>
           <label className="form-label">Deposit Amount (₹)</label>
