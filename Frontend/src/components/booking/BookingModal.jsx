@@ -37,10 +37,10 @@ const BookingModal = ({ equipment, bookedDates = [], onClose, onSuccess }) => {
 
   // Calculate rental cost
   const durationDays = startDate && endDate
-    ? differenceInCalendarDays(endDate, startDate)
+    ? differenceInCalendarDays(endDate, startDate) + 1
     : 0;
   const totalCost = durationDays * (equipment?.dailyRate || 0);
-  const meetsMinimum = durationDays >= (equipment?.minimumRentalDays || 1);
+  const exceedsMaximum = durationDays > (equipment?.maximumRentalDays || 7);
 
   const handleDateChange = (dates) => {
     const [start, end] = dates;
@@ -70,8 +70,8 @@ const BookingModal = ({ equipment, bookedDates = [], onClose, onSuccess }) => {
       return;
     }
 
-    if (!meetsMinimum) {
-      toast.error(`Minimum rental is ${equipment.minimumRentalDays} day(s)`);
+    if (exceedsMaximum) {
+      toast.error(`Maximum rental is ${equipment.maximumRentalDays} day(s)`);
       return;
     }
 
@@ -103,7 +103,7 @@ const BookingModal = ({ equipment, bookedDates = [], onClose, onSuccess }) => {
 
   if (!equipment) return null;
 
-  const { title, category, dailyRate, images, location, ownerId, minimumRentalDays, depositAmount } = equipment;
+  const { title, category, dailyRate, images, location, ownerId, maximumRentalDays, depositAmount } = equipment;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -167,11 +167,11 @@ const BookingModal = ({ equipment, bookedDates = [], onClose, onSuccess }) => {
             </div>
           </div>
 
-          {/* Minimum rental notice */}
-          {minimumRentalDays > 1 && (
+          {/* Maximum rental notice */}
+          {maximumRentalDays > 0 && (
             <div className="flex items-center gap-2 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-sm">
               <Clock className="w-4 h-4 flex-shrink-0" />
-              Minimum rental: {minimumRentalDays} days
+              Maximum rental: {maximumRentalDays} days
             </div>
           )}
 
@@ -229,10 +229,10 @@ const BookingModal = ({ equipment, bookedDates = [], onClose, onSuccess }) => {
                   <span className="text-primary-400">₹{totalCost?.toLocaleString()}</span>
                 </div>
               </div>
-              {!meetsMinimum && (
+              {exceedsMaximum && (
                 <div className="flex items-center gap-1.5 mt-3 text-red-400 text-xs">
                   <AlertTriangle className="w-3 h-3" />
-                  Must rent for at least {minimumRentalDays} days
+                  Cannot rent for more than {maximumRentalDays} days
                 </div>
               )}
             </div>
@@ -258,7 +258,7 @@ const BookingModal = ({ equipment, bookedDates = [], onClose, onSuccess }) => {
             <button
               id="confirm-booking-btn"
               onClick={handleBook}
-              disabled={loading || !startDate || !endDate || !meetsMinimum}
+              disabled={loading || !startDate || !endDate || exceedsMaximum}
               className="btn-primary flex-1 flex items-center justify-center gap-2"
             >
               {loading ? <LoadingSpinner size="sm" /> : <Calendar className="w-4 h-4" />}
