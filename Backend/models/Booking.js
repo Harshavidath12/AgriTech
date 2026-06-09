@@ -77,7 +77,7 @@ bookingSchema.index({ lenderId: 1, status: 1 });
 // ─── Virtual: Rental duration in days ─────────────────────────────────────────
 bookingSchema.virtual('durationDays').get(function () {
   const msPerDay = 1000 * 60 * 60 * 24;
-  return Math.ceil((this.endDate - this.startDate) / msPerDay);
+  return Math.ceil((this.endDate - this.startDate) / msPerDay) + 1;
 });
 
 // ─── Validate endDate > startDate before save ──────────────────────────────────
