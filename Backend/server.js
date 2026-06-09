@@ -18,6 +18,8 @@ const authRoutes = require('./routes/authRoutes');
 const equipmentRoutes = require('./routes/equipmentRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
+const path = require('path');
 
 // ─── Connect to MongoDB Atlas ──────────────────────────────────────────────────
 connectDB();
@@ -25,7 +27,7 @@ connectDB();
 const app = express();
 
 // ─── Security Middleware ───────────────────────────────────────────────────────
-app.use(helmet()); // Sets secure HTTP headers
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } })); // Allow images to load cross-origin
 
 // ─── CORS Configuration ────────────────────────────────────────────────────────
 app.use(
@@ -46,6 +48,9 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// ─── Serve Static Files ────────────────────────────────────────────────────────
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // ─── Health Check ──────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.status(200).json({
@@ -61,6 +66,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/equipment', equipmentRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // ─── 404 Handler ──────────────────────────────────────────────────────────────
 app.use((req, res) => {

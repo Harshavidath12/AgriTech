@@ -2,6 +2,24 @@ const Equipment = require('../models/Equipment');
 const Booking = require('../models/Booking');
 
 /**
+ * Helper to geocode an address string using Nominatim (OpenStreetMap)
+ */
+const geocodeAddress = async (locationStr) => {
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(locationStr)}&format=json&limit=1`, {
+      headers: { 'User-Agent': 'AgriTechApp/1.0' }
+    });
+    const data = await res.json();
+    if (data && data.length > 0) {
+      return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+    }
+  } catch (error) {
+    console.error('Geocoding error:', error);
+  }
+  return null;
+};
+
+/**
  * @desc    Search equipment by geolocation (lat, lng, radius in km)
  * @route   GET /api/equipment/search
  * @access  Public
@@ -81,9 +99,12 @@ const searchEquipment = async (req, res, next) => {
  */
 const getAllEquipment = async (req, res, next) => {
   try {
-    const { category, page = 1, limit = 12 } = req.query;
+    const { category, city, page = 1, limit = 12 } = req.query;
     const filter = { isAvailable: true };
     if (category && category !== 'All') filter.category = category;
+    if (city) {
+      filter['location.city'] = { $regex: city, $options: 'i' };
+    }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const total = await Equipment.countDocuments(filter);
@@ -151,6 +172,15 @@ const createEquipment = async (req, res, next) => {
       maximumRentalDays, depositAmount,
     } = req.body;
 
+    // Automatic Geocoding if coordinates are default [0,0]
+    if (location && location.coordinates && location.coordinates[0] === 0 && location.coordinates[1] === 0) {
+      const addressString = location.city || location.address; // Fallback to address if no city
+      const coords = await geocodeAddress(addressString);
+      if (coords) {
+        location.coordinates = coords;
+      }
+    }
+
     const equipment = await Equipment.create({
       title,
       description,
@@ -193,6 +223,16 @@ const updateEquipment = async (req, res, next) => {
         success: false,
         message: 'You are not authorized to update this listing',
       });
+    }
+
+    // Automatic Geocoding if coordinates are default [0,0]
+    if (req.body.location && req.body.location.coordinates && req.body.location.coordinates[0] === 0 && req.body.location.coordinates[1] === 0) {
+      const loc = req.body.location;
+      const addressString = loc.city || loc.address;
+      const coords = await geocodeAddress(addressString);
+      if (coords) {
+        req.body.location.coordinates = coords;
+      }
     }
 
     equipment = await Equipment.findByIdAndUpdate(req.params.id, req.body, {

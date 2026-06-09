@@ -130,7 +130,7 @@ const LenderDashboard = () => {
 
       {/* Tabs */}
       <div className="flex gap-1 p-1 rounded-xl bg-dark-800 border border-white/5 w-fit">
-        {['overview', 'portfolio', 'bookings'].map((tab) => (
+        {['overview', 'bookings'].map((tab) => (
           <button key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-5 py-2 rounded-lg text-sm font-medium capitalize transition-all ${
@@ -183,15 +183,16 @@ const LenderDashboard = () => {
         </div>
       )}
 
-      {/* Portfolio Tab */}
-      {activeTab === 'portfolio' && (
-        <div className="space-y-3">
+      {/* Equipment Portfolio (Always visible on Overview) */}
+      {activeTab === 'overview' && (
+        <div className="mt-8 space-y-3">
+          <h3 className="font-display font-semibold text-white mb-4">Your Equipment Portfolio</h3>
           {!equipment?.length ? (
             <div className="glass-card p-12 text-center">
               <Package className="w-12 h-12 text-gray-600 mx-auto mb-4" />
               <p className="text-gray-400 font-medium">No listings yet</p>
               <p className="text-gray-600 text-sm mt-1 mb-4">Add your first equipment to start earning</p>
-              <button onClick={() => { setEditingEquipment(null); setShowForm(true); setActiveTab('overview'); }}
+              <button onClick={() => { setEditingEquipment(null); setShowForm(true); }}
                 className="btn-primary">Add Equipment</button>
             </div>
           ) : (
@@ -211,7 +212,7 @@ const LenderDashboard = () => {
                   </span>
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
-                  <button onClick={() => { setEditingEquipment(item); setShowForm(true); setActiveTab('overview'); }}
+                  <button onClick={() => { setEditingEquipment(item); setShowForm(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                     className="btn-secondary !py-2 !px-3">
                     <Edit3 className="w-3.5 h-3.5" />
                   </button>
@@ -225,6 +226,8 @@ const LenderDashboard = () => {
           )}
         </div>
       )}
+
+
 
       {/* Bookings Tab */}
       {activeTab === 'bookings' && (

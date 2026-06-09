@@ -24,6 +24,7 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -36,15 +37,64 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
       address: existing?.location?.address || '',
       city: existing?.location?.city || '',
       state: existing?.location?.state || '',
-      lat: existing?.location?.coordinates?.[1] || '',
-      lng: existing?.location?.coordinates?.[0] || '',
+
     },
   });
 
-  const addImageUrl = () => {
-    if (imageInput.trim()) {
-      setImageUrls([...imageUrls, imageInput.trim()]);
-      setImageInput('');
+  // Re-populate form when `existing` prop changes (e.g. switching between items in edit mode)
+  useEffect(() => {
+    if (existing) {
+      reset({
+        title: existing.title || '',
+        description: existing.description || '',
+        category: existing.category || 'Tractor',
+        dailyRate: existing.dailyRate || '',
+        maximumRentalDays: existing.maximumRentalDays || 7,
+        depositAmount: existing.depositAmount || 0,
+        address: existing.location?.address || '',
+        city: existing.location?.city || '',
+        state: existing.location?.state || '',
+      });
+      setImageUrls(existing.images || []);
+    } else {
+      reset({
+        title: '',
+        description: '',
+        category: 'Tractor',
+        dailyRate: '',
+        maximumRentalDays: 7,
+        depositAmount: 0,
+        address: '',
+        city: '',
+        state: '',
+      });
+      setImageUrls([]);
+    }
+  }, [existing, reset]);
+
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('images', files[i]);
+    }
+
+    setUploading(true);
+    try {
+      const { data } = await axiosInstance.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setImageUrls((prev) => [...prev, ...data.urls]);
+      toast.success('Images uploaded successfully');
+    } catch (err) {
+      toast.error('Failed to upload images');
+    } finally {
+      setUploading(false);
+      e.target.value = ''; // Reset input
     }
   };
 
@@ -65,7 +115,7 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
         images: imageUrls,
         location: {
           type: 'Point',
-          coordinates: [parseFloat(data.lng), parseFloat(data.lat)], // [lng, lat]
+          coordinates: [0, 0], // [lng, lat] defaulted to 0 since location search is city-based
           address: data.address,
           city: data.city,
           state: data.state,
@@ -158,51 +208,31 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
           </div>
           <input {...register('city')} className="form-input" placeholder="City" />
           <input {...register('state')} className="form-input" placeholder="State" />
-          <div>
-            <input
-              type="number"
-              step="any"
-              {...register('lat', { required: 'Latitude is required' })}
-              className="form-input"
-              placeholder="Latitude (e.g. 13.0827)"
-            />
-            {errors.lat && <p className="text-red-400 text-xs mt-1">{errors.lat.message}</p>}
-          </div>
-          <div>
-            <input
-              type="number"
-              step="any"
-              {...register('lng', { required: 'Longitude is required' })}
-              className="form-input"
-              placeholder="Longitude (e.g. 80.2707)"
-            />
-            {errors.lng && <p className="text-red-400 text-xs mt-1">{errors.lng.message}</p>}
-          </div>
+
         </div>
       </div>
 
       {/* Images */}
       <div>
-        <label className="form-label">Equipment Images (URLs)</label>
+        <label className="form-label">Equipment Images</label>
         <div className="flex gap-2 mb-3">
           <input
-            value={imageInput}
-            onChange={(e) => setImageInput(e.target.value)}
-            className="form-input flex-1"
-            placeholder="https://example.com/equipment.jpg"
-            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addImageUrl())}
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleFileUpload}
+            disabled={uploading}
+            className="form-input flex-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-600 file:text-white hover:file:bg-primary-700"
           />
-          <button type="button" onClick={addImageUrl} className="btn-secondary !py-2.5 !px-4">
-            <Plus className="w-4 h-4" />
-          </button>
+          {uploading && <div className="flex items-center text-primary-400 text-sm"><LoadingSpinner size="sm" className="mr-2" /> Uploading...</div>}
         </div>
         {imageUrls.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {imageUrls.map((url, i) => (
-              <div key={i} className="flex items-center gap-1 px-2 py-1 rounded-lg bg-dark-700 border border-white/10 text-xs text-gray-300 max-w-xs">
-                <span className="truncate max-w-[180px]">{url}</span>
-                <button type="button" onClick={() => removeImage(i)} className="text-red-400 hover:text-red-300 flex-shrink-0">
-                  <X className="w-3 h-3" />
+              <div key={i} className="relative w-24 h-24 rounded-lg overflow-hidden border border-white/10 group">
+                <img src={url} alt={`Upload ${i}`} className="w-full h-full object-cover" />
+                <button type="button" onClick={() => removeImage(i)} className="absolute top-1 right-1 bg-black/60 p-1 rounded-full text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             ))}

@@ -159,6 +159,17 @@ const EquipmentMap = ({ equipment = [], center, radius = 50, onMarkerClick }) =>
     );
   }
 
+  const getCategoryEmoji = (category) => {
+    switch (category) {
+      case 'Drone': return '🛸';
+      case 'Harvester': return '🌾';
+      case 'Planter': return '🌱';
+      case 'Irrigator': return '💧';
+      case 'Sprayer': return '🌿';
+      default: return '🚜';
+    }
+  };
+
   return (
     <GoogleMap
       mapContainerClassName="w-full h-full rounded-2xl"
@@ -205,7 +216,7 @@ const EquipmentMap = ({ equipment = [], center, radius = 50, onMarkerClick }) =>
                   <ellipse cx="18" cy="42" rx="8" ry="3" fill="rgba(0,0,0,0.3)"/>
                   <path d="M18 0C9.164 0 2 7.164 2 16c0 12 16 28 16 28S34 28 34 16C34 7.164 26.836 0 18 0z"
                         fill="#16a34a" stroke="#22c55e" stroke-width="2"/>
-                  <text x="18" y="21" text-anchor="middle" font-size="14" fill="white">🚜</text>
+                  <text x="18" y="21" text-anchor="middle" font-size="14" fill="white">${getCategoryEmoji(item.category)}</text>
                 </svg>
               `)}`,
               scaledSize: new window.google.maps.Size(36, 44),
