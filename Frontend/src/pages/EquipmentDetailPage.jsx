@@ -51,7 +51,7 @@ const EquipmentDetailPage = () => {
 
   const {
     title, description, category, dailyRate, images, location,
-    ownerId, isAvailable, specifications, minimumRentalDays, depositAmount, createdAt
+    ownerId, isAvailable, specifications, maximumRentalDays, depositAmount, createdAt
   } = equipment;
 
   const categoryIcon = CATEGORY_ICONS[category] || '⚙️';
@@ -127,10 +127,10 @@ const EquipmentDetailPage = () => {
                 </div>
               )}
             </div>
-            {minimumRentalDays > 1 && (
-              <div className="flex items-center gap-1.5 text-gray-400 text-sm border-t border-white/5 pt-3">
-                <Clock className="w-4 h-4 text-primary-400" />
-                Minimum rental: {minimumRentalDays} day{minimumRentalDays !== 1 ? 's' : ''}
+            {maximumRentalDays > 0 && (
+              <div className="flex items-center gap-1.5 text-gray-400">
+                <Clock className="w-4 h-4" />
+                Maximum rental: {maximumRentalDays} day{maximumRentalDays !== 1 ? 's' : ''}
               </div>
             )}
           </div>
