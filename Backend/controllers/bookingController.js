@@ -1,5 +1,6 @@
 const Booking = require('../models/Booking');
 const Equipment = require('../models/Equipment');
+const Notification = require('../models/Notification');
 
 /**
  * @desc    Create a new booking with strict conflict checking
@@ -125,6 +126,13 @@ const createBooking = async (req, res, next) => {
       { path: 'lenderId', select: 'name email phone' },
     ]);
 
+    await Notification.create({
+      recipientId: equipment.ownerId,
+      senderId: req.user._id,
+      type: 'Booking_Request',
+      message: `New booking request for ${equipment.title}.`
+    });
+
     res.status(201).json({
       success: true,
       message: 'Booking request submitted successfully',
@@ -185,7 +193,7 @@ const getMyBookings = async (req, res, next) => {
 const getBookingById = async (req, res, next) => {
   try {
     const booking = await Booking.findById(req.params.id)
-      .populate('equipmentId', 'title category images dailyRate location ownerId')
+      .populate('equipmentId', 'title category images dailyRate location ownerId depositAmount')
       .populate('renterId', 'name email phone profileImage')
       .populate('lenderId', 'name email phone profileImage');
 
@@ -218,7 +226,7 @@ const getBookingById = async (req, res, next) => {
 const updateBookingStatus = async (req, res, next) => {
   try {
     const { status, cancellationReason } = req.body;
-    const validStatuses = ['Confirmed', 'Completed', 'Cancelled'];
+    const validStatuses = ['Confirmed', 'Completed', 'Cancelled', 'Approved', 'Declined'];
 
     if (!validStatuses.includes(status)) {
       return res.status(400).json({
@@ -236,11 +244,11 @@ const updateBookingStatus = async (req, res, next) => {
     const isLender = booking.lenderId.toString() === req.user._id.toString();
 
     // ─── Permission rules ─────────────────────────────────────────────────────
-    if (status === 'Confirmed' || status === 'Completed') {
+    if (['Confirmed', 'Completed', 'Approved', 'Declined'].includes(status)) {
       if (!isLender) {
         return res.status(403).json({
           success: false,
-          message: 'Only the lender can confirm or complete bookings',
+          message: 'Only the lender can update to this status',
         });
       }
     }
@@ -273,4 +281,66 @@ const updateBookingStatus = async (req, res, next) => {
   }
 };
 
-module.exports = { createBooking, getMyBookings, getBookingById, updateBookingStatus };
+/**
+ * @desc    Approve booking
+ * @route   PATCH /api/bookings/:id/approve
+ * @access  Private
+ */
+const approveBooking = async (req, res, next) => {
+  try {
+    const booking = await Booking.findById(req.params.id).populate('equipmentId');
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Booking not found' });
+    }
+    if (booking.lenderId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized' });
+    }
+    
+    booking.status = 'Approved';
+    await booking.save();
+
+    await Notification.create({
+      recipientId: booking.renterId,
+      senderId: booking.lenderId,
+      type: 'Booking_Approved',
+      message: `Your booking for ${booking.equipmentId.title} has been approved. Please complete payment.`
+    });
+
+    res.status(200).json({ success: true, data: booking });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    Pay for booking
+ * @route   POST /api/bookings/:id/pay
+ * @access  Private
+ */
+const payBooking = async (req, res, next) => {
+  try {
+    const booking = await Booking.findById(req.params.id).populate('equipmentId');
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Booking not found' });
+    }
+    if (booking.renterId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized' });
+    }
+    
+    booking.status = 'Confirmed';
+    await booking.save();
+
+    await Notification.create({
+      recipientId: booking.lenderId,
+      senderId: booking.renterId,
+      type: 'Payment_Received',
+      message: `Payment received for ${booking.equipmentId.title}.`
+    });
+
+    res.status(200).json({ success: true, data: booking });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createBooking, getMyBookings, getBookingById, updateBookingStatus, approveBooking, payBooking };
