@@ -68,32 +68,40 @@ const EquipmentDetailPage = () => {
 
       <div className="grid lg:grid-cols-2 gap-8">
 
-        {/* ─── Image Gallery ────────────────────────────────────────────── */}
-        <div className="space-y-3">
-          {/* Main image */}
-          <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-dark-700">
-            {images?.length > 0 ? (
-              <img src={images[activeImage]} alt={title}
-                className="w-full h-full object-cover transition-all duration-300" />
-            ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center">
-                <span className="text-8xl mb-4">{categoryIcon}</span>
-                <p className="text-gray-500 text-sm">No images available</p>
+        <div className="space-y-6">
+          {/* ─── Image Gallery ────────────────────────────────────────────── */}
+          <div className="space-y-3">
+            {/* Main image */}
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-dark-700">
+              {images?.length > 0 ? (
+                <img src={images[activeImage]} alt={title}
+                  className="w-full h-full object-cover transition-all duration-300" />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center">
+                  <span className="text-8xl mb-4">{categoryIcon}</span>
+                  <p className="text-gray-500 text-sm">No images available</p>
+                </div>
+              )}
+            </div>
+            {/* Thumbnails */}
+            {images?.length > 1 && (
+              <div className="flex gap-2 overflow-x-auto">
+                {images.map((img, i) => (
+                  <button key={i} onClick={() => setActiveImage(i)}
+                    className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all
+                      ${activeImage === i ? 'border-primary-500' : 'border-transparent opacity-60 hover:opacity-100'}`}>
+                    <img src={img} alt={`${title} ${i + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
               </div>
             )}
           </div>
-          {/* Thumbnails */}
-          {images?.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto">
-              {images.map((img, i) => (
-                <button key={i} onClick={() => setActiveImage(i)}
-                  className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all
-                    ${activeImage === i ? 'border-primary-500' : 'border-transparent opacity-60 hover:opacity-100'}`}>
-                  <img src={img} alt={`${title} ${i + 1}`} className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
+
+          {/* ─── Description ─────────────────────────────────────────── */}
+          <div className="glass-card p-6">
+            <h2 className="font-display font-bold text-white text-lg mb-4">Description</h2>
+            <p className="text-gray-300 leading-relaxed whitespace-pre-line">{description}</p>
+          </div>
         </div>
 
         {/* ─── Details Panel ────────────────────────────────────────────── */}
@@ -116,14 +124,14 @@ const EquipmentDetailPage = () => {
               <div>
                 <p className="text-gray-400 text-sm">Daily Rental Rate</p>
                 <p className="text-4xl font-display font-bold text-primary-400">
-                  ₹{dailyRate?.toLocaleString()}
+                  Rs. {dailyRate?.toLocaleString()}
                   <span className="text-gray-400 text-lg font-normal">/day</span>
                 </p>
               </div>
               {depositAmount > 0 && (
                 <div className="text-right">
                   <p className="text-gray-400 text-xs">Security deposit</p>
-                  <p className="text-yellow-400 font-semibold">₹{depositAmount?.toLocaleString()}</p>
+                  <p className="text-yellow-800 font-semibold">Rs. {depositAmount?.toLocaleString()}</p>
                 </div>
               )}
             </div>
@@ -206,29 +214,21 @@ const EquipmentDetailPage = () => {
               )}
             </div>
           )}
-        </div>
-      </div>
-
-      {/* ─── Description & Specs ─────────────────────────────────────────── */}
-      <div className="mt-8 grid lg:grid-cols-2 gap-6">
-        <div className="glass-card p-6">
-          <h2 className="font-display font-bold text-white text-lg mb-4">Description</h2>
-          <p className="text-gray-300 leading-relaxed whitespace-pre-line">{description}</p>
-        </div>
-
-        {specifications && specifications.size > 0 && (
-          <div className="glass-card p-6">
-            <h2 className="font-display font-bold text-white text-lg mb-4">Specifications</h2>
-            <div className="space-y-2">
-              {Array.from(specifications.entries()).map(([key, val]) => (
-                <div key={key} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
-                  <span className="text-gray-400 text-sm capitalize">{key}</span>
-                  <span className="text-white text-sm font-medium">{val}</span>
-                </div>
-              ))}
+          {/* Specifications */}
+          {specifications && specifications.size > 0 && (
+            <div className="glass-card p-6">
+              <h2 className="font-display font-bold text-white text-lg mb-4">Specifications</h2>
+              <div className="space-y-2">
+                {Array.from(specifications.entries()).map(([key, val]) => (
+                  <div key={key} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
+                    <span className="text-gray-400 text-sm capitalize">{key}</span>
+                    <span className="text-white text-sm font-medium">{val}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Booking Modal */}

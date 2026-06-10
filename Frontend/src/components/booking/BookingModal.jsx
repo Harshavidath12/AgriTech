@@ -122,12 +122,12 @@ const BookingModal = ({ equipment, bookedDates = [], onClose, onSuccess }) => {
             </div>
             <div>
               <h2 className="font-display font-bold text-white text-lg">Book Equipment</h2>
-              <p className="text-gray-500 text-sm">Select your rental dates</p>
+              <p className="text-gray-100 text-sm">Select your rental dates</p>
             </div>
           </div>
           <button id="close-booking-modal" onClick={onClose}
             className="w-8 h-8 rounded-full bg-dark-700 hover:bg-dark-600 flex items-center justify-center transition-colors">
-            <X className="w-4 h-4 text-gray-400" />
+            <X className="w-4 h-4 text-gray-100" />
           </button>
         </div>
 
@@ -146,22 +146,22 @@ const BookingModal = ({ equipment, bookedDates = [], onClose, onSuccess }) => {
               <p className="font-display font-semibold text-white text-base leading-tight mb-1 truncate">{title}</p>
               <p className="text-primary-400 text-sm font-medium">{category}</p>
               {location?.address && (
-                <div className="flex items-center gap-1 text-gray-500 text-xs mt-1">
+                <div className="flex items-center gap-1 text-gray-100 text-xs mt-1">
                   <MapPin className="w-3 h-3" />{location.address}
                 </div>
               )}
               {ownerId?.name && (
-                <p className="text-gray-400 text-xs mt-1">by {ownerId.name}</p>
+                <p className="text-gray-100 text-xs mt-1">by {ownerId.name}</p>
               )}
             </div>
             <div className="text-right flex-shrink-0">
               <p className="text-primary-400 font-display font-bold text-xl">
-                ₹{dailyRate?.toLocaleString()}
+                Rs. {dailyRate?.toLocaleString()}
               </p>
-              <p className="text-gray-500 text-xs">per day</p>
+              <p className="text-gray-100 text-xs">per day</p>
               {depositAmount > 0 && (
-                <p className="text-yellow-400 text-xs mt-1">
-                  + ₹{depositAmount?.toLocaleString()} deposit
+                <p className="text-yellow-800 font-medium text-xs mt-1">
+                  + Rs. {depositAmount?.toLocaleString()} deposit
                 </p>
               )}
             </div>
@@ -169,7 +169,7 @@ const BookingModal = ({ equipment, bookedDates = [], onClose, onSuccess }) => {
 
           {/* Maximum rental notice */}
           {maximumRentalDays > 0 && (
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-sm">
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-800 font-medium text-sm">
               <Clock className="w-4 h-4 flex-shrink-0" />
               Maximum rental: {maximumRentalDays} days
             </div>
@@ -195,7 +195,7 @@ const BookingModal = ({ equipment, bookedDates = [], onClose, onSuccess }) => {
               />
             </div>
             {bookedDates.length > 0 && (
-              <div className="flex items-center gap-1.5 mt-2 text-gray-500 text-xs">
+              <div className="flex items-center gap-1.5 mt-2 text-gray-100 text-xs">
                 <span className="w-3 h-3 rounded-sm bg-gray-600 inline-block" />
                 Grayed dates are already booked
               </div>
@@ -210,27 +210,27 @@ const BookingModal = ({ equipment, bookedDates = [], onClose, onSuccess }) => {
                 <p className="text-primary-400 font-semibold text-sm">Cost Summary</p>
               </div>
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between text-gray-400">
+                <div className="flex justify-between text-gray-100">
                   <span>{format(startDate, 'MMM d')} → {format(endDate, 'MMM d, yyyy')}</span>
                   <span>{durationDays} day{durationDays !== 1 ? 's' : ''}</span>
                 </div>
-                <div className="flex justify-between text-gray-400">
+                <div className="flex justify-between text-gray-100">
                   <span>Rate × Days</span>
-                  <span>₹{dailyRate?.toLocaleString()} × {durationDays}</span>
+                  <span>Rs. {dailyRate?.toLocaleString()} × {durationDays}</span>
                 </div>
                 {depositAmount > 0 && (
-                  <div className="flex justify-between text-yellow-400 text-xs">
+                  <div className="flex justify-between text-yellow-800 font-medium text-xs">
                     <span>Deposit</span>
-                    <span>₹{depositAmount?.toLocaleString()}</span>
+                    <span>Rs. {depositAmount?.toLocaleString()}</span>
                   </div>
                 )}
                 <div className="flex justify-between font-bold text-white text-base pt-2 border-t border-white/10">
                   <span>Total Cost</span>
-                  <span className="text-primary-400">₹{totalCost?.toLocaleString()}</span>
+                  <span className="text-primary-400">Rs. {totalCost?.toLocaleString()}</span>
                 </div>
               </div>
               {exceedsMaximum && (
-                <div className="flex items-center gap-1.5 mt-3 text-red-400 text-xs">
+                <div className="flex items-center gap-1.5 mt-3 text-red-700 font-medium text-xs">
                   <AlertTriangle className="w-3 h-3" />
                   Cannot rent for more than {maximumRentalDays} days
                 </div>
