@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import MarketplacePage from './pages/MarketplacePage';
 import DashboardPage from './pages/DashboardPage';
+import CheckoutPage from './pages/CheckoutPage';
 import EquipmentDetailPage from './pages/EquipmentDetailPage';
 import LoadingSpinner from './components/LoadingSpinner';
 
@@ -40,6 +41,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout/:bookingId"
+            element={
+              <ProtectedRoute>
+                <CheckoutPage />
               </ProtectedRoute>
             }
           />
