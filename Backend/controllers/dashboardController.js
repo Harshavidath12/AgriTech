@@ -17,17 +17,24 @@ const getLenderDashboard = async (req, res, next) => {
 
     // ─── All bookings on lender's equipment ───────────────────────────────────
     const bookings = await Booking.find({ lenderId })
-      .populate('equipmentId', 'title category dailyRate')
+      .populate('equipmentId', 'title category dailyRate depositAmount')
       .populate('renterId', 'name email profileImage')
       .sort({ createdAt: -1 })
       .lean();
 
     // ─── Earnings analytics ───────────────────────────────────────────────────
     const completedBookings = bookings.filter((b) => b.status === 'Completed');
-    const totalEarnings = completedBookings.reduce((sum, b) => sum + b.totalCost, 0);
-    const pendingEarnings = bookings
-      .filter((b) => b.status === 'Confirmed')
-      .reduce((sum, b) => sum + b.totalCost, 0);
+    const confirmedBookings = bookings.filter((b) => b.status === 'Confirmed');
+    
+    // Total Deposits Earned (from Confirmed and Completed)
+    const totalEarnings = [...confirmedBookings, ...completedBookings].reduce(
+      (sum, b) => sum + (b.equipmentId?.depositAmount || 0), 0
+    );
+    
+    // Pending Income (Remaining balance to be paid for Confirmed bookings)
+    const pendingEarnings = confirmedBookings.reduce(
+      (sum, b) => sum + (b.totalCost - (b.equipmentId?.depositAmount || 0)), 0
+    );
 
     // Monthly earnings for the past 6 months
     const monthlyEarnings = Array.from({ length: 6 }, (_, i) => {
@@ -37,7 +44,7 @@ const getLenderDashboard = async (req, res, next) => {
       const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
       const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
-      const monthTotal = completedBookings
+      const monthTotal = [...completedBookings, ...confirmedBookings]
         .filter((b) => new Date(b.endDate) >= monthStart && new Date(b.endDate) <= monthEnd)
         .reduce((sum, b) => sum + b.totalCost, 0);
 
@@ -84,28 +91,21 @@ const getRenterDashboard = async (req, res, next) => {
     const renterId = req.user._id;
 
     const bookings = await Booking.find({ renterId })
-      .populate('equipmentId', 'title category images dailyRate location')
+      .populate('equipmentId', 'title category images dailyRate location depositAmount')
       .populate('lenderId', 'name email phone profileImage')
       .sort({ createdAt: -1 })
       .lean();
 
     const now = new Date();
-    const upcoming = bookings.filter(
-      (b) => new Date(b.startDate) > now && ['Pending', 'Confirmed'].includes(b.status)
-    );
-    const active = bookings.filter(
-      (b) =>
-        new Date(b.startDate) <= now &&
-        new Date(b.endDate) >= now &&
-        b.status === 'Confirmed'
-    );
-    const past = bookings.filter(
-      (b) => ['Completed', 'Cancelled'].includes(b.status)
+    const upcoming = bookings.filter((b) => b.status === 'Pending');
+    const active = bookings.filter((b) => b.status === 'Approved');
+    const past = bookings.filter((b) => 
+      ['Confirmed', 'Completed', 'Cancelled', 'Declined'].includes(b.status)
     );
 
     const totalSpent = bookings
-      .filter((b) => b.status === 'Completed')
-      .reduce((sum, b) => sum + b.totalCost, 0);
+      .filter((b) => ['Confirmed', 'Completed'].includes(b.status))
+      .reduce((sum, b) => sum + (b.equipmentId?.depositAmount || 0), 0);
 
     res.status(200).json({
       success: true,
