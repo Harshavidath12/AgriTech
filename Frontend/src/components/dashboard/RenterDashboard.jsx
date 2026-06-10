@@ -66,7 +66,7 @@ const RenterDashboard = () => {
   const tabData = {
     upcoming: upcoming || [],
     active: active || [],
-    past: past || [],
+    completed: past || [],
     all: allBookings || [],
   };
 
@@ -93,9 +93,9 @@ const RenterDashboard = () => {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard icon={Package} label="Total Bookings" value={stats?.totalBookings || 0} color="primary" />
-        <StatCard icon={Clock} label="Upcoming" value={stats?.upcomingBookings || 0} sub="confirmed rentals" color="blue" />
+        <StatCard icon={Clock} label="Upcoming" value={stats?.upcomingBookings || 0} sub="pending requests" color="blue" />
         <StatCard icon={CheckCircle} label="Active Now" value={stats?.activeBookings || 0} sub="in progress" color="earth" />
-        <StatCard icon={CreditCard} label="Total Spent" value={`₹${(stats?.totalSpent || 0).toLocaleString()}`} sub="on completed rentals" color="yellow" />
+        <StatCard icon={CreditCard} label="Total Spent" value={`Rs. ${(stats?.totalSpent || 0).toLocaleString()}`} sub="on completed rentals" color="yellow" />
       </div>
 
       {/* Tabs */}
@@ -103,7 +103,7 @@ const RenterDashboard = () => {
         {[
           { key: 'upcoming', label: `Upcoming (${upcoming?.length || 0})` },
           { key: 'active', label: `Active (${active?.length || 0})` },
-          { key: 'past', label: 'Past' },
+          { key: 'completed', label: 'Completed' },
           { key: 'all', label: 'All Bookings' },
         ].map(({ key, label }) => (
           <button key={key}
@@ -126,7 +126,7 @@ const RenterDashboard = () => {
             <p className="text-gray-400 font-medium">
               {activeTab === 'upcoming' ? 'No upcoming bookings' :
                activeTab === 'active' ? 'No active rentals' :
-               activeTab === 'past' ? 'No past bookings' : 'No bookings yet'}
+               activeTab === 'completed' ? 'No completed bookings' : 'No bookings yet'}
             </p>
             <p className="text-gray-600 text-sm mt-1 mb-4">
               Browse the marketplace to find and book equipment
