@@ -19,9 +19,11 @@ const BookingCard = ({ booking, onStatusChange, viewAs = 'renter' }) => {
 
   const statusClass = {
     Pending: 'badge-pending',
+    Approved: 'badge-pending',
     Confirmed: 'badge-confirmed',
     Completed: 'badge-completed',
     Cancelled: 'badge-cancelled',
+    Declined: 'badge-cancelled',
   }[status] || 'badge-pending';
 
   return (
@@ -57,7 +59,7 @@ const BookingCard = ({ booking, onStatusChange, viewAs = 'renter' }) => {
             </div>
             <div className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-primary-500" />
-              {durationDays} day{durationDays !== 1 ? 's' : ''} × ₹{dailyRateAtBooking?.toLocaleString()}/day
+              {durationDays} day{durationDays !== 1 ? 's' : ''} × Rs. {dailyRateAtBooking?.toLocaleString()}/day
             </div>
             {equipmentId?.location?.address && (
               <div className="flex items-center gap-1.5 sm:col-span-2">
@@ -84,7 +86,7 @@ const BookingCard = ({ booking, onStatusChange, viewAs = 'renter' }) => {
             <div>
               <p className="text-gray-500 text-xs">Total Cost</p>
               <p className="text-primary-400 font-display font-bold text-lg">
-                ₹{totalCost?.toLocaleString()}
+                Rs. {totalCost?.toLocaleString()}
               </p>
             </div>
 
@@ -94,13 +96,13 @@ const BookingCard = ({ booking, onStatusChange, viewAs = 'renter' }) => {
                 {status === 'Pending' && (
                   <>
                     <button
-                      onClick={() => onStatusChange?.(_id, 'Confirmed')}
+                      onClick={() => onStatusChange?.(_id, 'Approved')}
                       className="btn-primary !py-1.5 !px-3 !text-xs"
                     >
-                      Confirm
+                      Approve
                     </button>
                     <button
-                      onClick={() => onStatusChange?.(_id, 'Cancelled')}
+                      onClick={() => onStatusChange?.(_id, 'Declined')}
                       className="!py-1.5 !px-3 !text-xs rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors text-xs font-semibold"
                     >
                       Decline
@@ -118,14 +120,26 @@ const BookingCard = ({ booking, onStatusChange, viewAs = 'renter' }) => {
               </div>
             )}
 
-            {/* Renter cancel button */}
-            {viewAs === 'renter' && ['Pending', 'Confirmed'].includes(status) && (
-              <button
-                onClick={() => onStatusChange?.(_id, 'Cancelled')}
-                className="!py-1.5 !px-3 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors text-xs font-semibold"
-              >
-                Cancel
-              </button>
+            {/* Renter action buttons */}
+            {viewAs === 'renter' && (
+              <div className="flex gap-2">
+                {status === 'Approved' && (
+                  <button
+                    onClick={() => navigate(`/checkout/${_id}`)}
+                    className="btn-primary !py-1.5 !px-3 !text-xs bg-green-600 hover:bg-green-500 border-none"
+                  >
+                    Checkout
+                  </button>
+                )}
+                {['Pending', 'Approved'].includes(status) && (
+                  <button
+                    onClick={() => onStatusChange?.(_id, 'Cancelled')}
+                    className="!py-1.5 !px-3 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors text-xs font-semibold"
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
             )}
           </div>
         </div>
