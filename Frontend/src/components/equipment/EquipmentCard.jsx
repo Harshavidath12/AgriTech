@@ -116,7 +116,7 @@ const EquipmentCard = ({ equipment, onBook }) => {
           <div>
             <p className="text-gray-500 text-xs">Daily rate</p>
             <p className="text-primary-400 font-display font-bold text-lg">
-              ₹{dailyRate?.toLocaleString()}
+              Rs. {dailyRate?.toLocaleString()}
               <span className="text-gray-500 text-xs font-normal">/day</span>
             </p>
           </div>
