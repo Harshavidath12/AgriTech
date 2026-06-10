@@ -8,6 +8,7 @@ import {
 } from '@react-google-maps/api';
 import { MapPin, AlertCircle, Key } from 'lucide-react';
 import LoadingSpinner from '../LoadingSpinner';
+import { useAuth } from '../../context/AuthContext';
 
 // Detect if API key is missing or still the placeholder
 const MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
@@ -111,6 +112,7 @@ const MAP_STYLES = [
 const EquipmentMap = ({ equipment = [], center, radius = 50, onMarkerClick }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [map, setMap] = useState(null);
+  const { isLender } = useAuth();
 
   // Skip loading Maps SDK entirely if no valid API key — avoids the Google error iframe
   const { isLoaded, loadError } = useJsApiLoader({
@@ -241,16 +243,18 @@ const EquipmentMap = ({ equipment = [], center, radius = 50, onMarkerClick }) =>
             <p className="text-green-700 font-bold text-sm mb-3">
               ₹{selectedItem.dailyRate?.toLocaleString()}/day
             </p>
-            <button
-              onClick={() => {
-                setSelectedItem(null);
-                onMarkerClick?.(selectedItem);
-              }}
-              className="w-full bg-green-600 hover:bg-green-500 text-white text-xs font-semibold
-                         py-1.5 px-3 rounded-lg transition-colors"
-            >
-              Book Now
-            </button>
+            {!isLender && (
+              <button
+                onClick={() => {
+                  setSelectedItem(null);
+                  onMarkerClick?.(selectedItem);
+                }}
+                className="w-full bg-green-600 hover:bg-green-500 text-white text-xs font-semibold
+                           py-1.5 px-3 rounded-lg transition-colors"
+              >
+                Book Now
+              </button>
+            )}
           </div>
         </InfoWindow>
       )}

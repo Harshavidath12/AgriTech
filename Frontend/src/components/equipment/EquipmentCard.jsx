@@ -1,5 +1,6 @@
 import { MapPin, Star, Clock, ChevronRight, Tractor } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 /**
  * Category icon mapping
@@ -23,6 +24,7 @@ const CATEGORY_ICONS = {
  */
 const EquipmentCard = ({ equipment, onBook }) => {
   const navigate = useNavigate();
+  const { isLender } = useAuth();
 
   const {
     _id,
@@ -119,18 +121,20 @@ const EquipmentCard = ({ equipment, onBook }) => {
             </p>
           </div>
 
-          <button
-            id={`book-btn-${_id}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onBook && isAvailable) onBook(equipment);
-            }}
-            disabled={!isAvailable}
-            className="btn-primary !py-2 !px-4 !text-sm flex items-center gap-1"
-          >
-            Book
-            <ChevronRight className="w-3 h-3" />
-          </button>
+          {!isLender && (
+            <button
+              id={`book-btn-${_id}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onBook && isAvailable) onBook(equipment);
+              }}
+              disabled={!isAvailable}
+              className="btn-primary !py-2 !px-4 !text-sm flex items-center gap-1"
+            >
+              Book
+              <ChevronRight className="w-3 h-3" />
+            </button>
+          )}
         </div>
       </div>
     </div>
