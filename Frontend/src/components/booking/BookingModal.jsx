@@ -206,8 +206,8 @@ const BookingModal = ({ equipment, bookedDates = [], onClose, onSuccess }) => {
           {startDate && endDate && (
             <div className="p-4 rounded-xl bg-primary-900/20 border border-primary-500/20 animate-fade-in">
               <div className="flex items-center gap-2 mb-3">
-                <Calculator className="w-4 h-4 text-primary-400" />
-                <p className="text-primary-400 font-semibold text-sm">Cost Summary</p>
+                <Calculator className="w-4 h-4 text-[#800000]" />
+                <p className="text-[#800000] font-semibold text-sm">Cost Summary</p>
               </div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between text-gray-100">
@@ -224,9 +224,9 @@ const BookingModal = ({ equipment, bookedDates = [], onClose, onSuccess }) => {
                     <span>Rs. {depositAmount?.toLocaleString()}</span>
                   </div>
                 )}
-                <div className="flex justify-between font-bold text-white text-base pt-2 border-t border-white/10">
+                <div className="flex justify-between font-bold text-gray-100 text-base pt-2 border-t border-gray-300">
                   <span>Total Cost</span>
-                  <span className="text-primary-400">Rs. {totalCost?.toLocaleString()}</span>
+                  <span className="text-[#800000]">Rs. {totalCost?.toLocaleString()}</span>
                 </div>
               </div>
               {exceedsMaximum && (
