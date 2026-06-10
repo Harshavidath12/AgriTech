@@ -123,9 +123,9 @@ const LenderDashboard = () => {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard icon={Package} label="Total Listings" value={stats?.totalListings || 0} color="primary" />
-        <StatCard icon={DollarSign} label="Total Earnings" value={`₹${(stats?.totalEarnings || 0).toLocaleString()}`} color="earth" />
+        <StatCard icon={DollarSign} label="Total Deposits Earned" value={`Rs. ${(stats?.totalEarnings || 0).toLocaleString()}`} color="earth" />
         <StatCard icon={CheckCircle} label="Completed" value={stats?.completedBookings || 0} sub="bookings" color="blue" />
-        <StatCard icon={TrendingUp} label="Pending Income" value={`₹${(stats?.pendingEarnings || 0).toLocaleString()}`} color="purple" />
+        <StatCard icon={TrendingUp} label="Pending Income" value={`Rs. ${(stats?.pendingEarnings || 0).toLocaleString()}`} color="purple" />
       </div>
 
       {/* Tabs */}
@@ -145,7 +145,7 @@ const LenderDashboard = () => {
 
       {/* Overview Tab */}
       {activeTab === 'overview' && (
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-1 gap-6">
           {/* Monthly Earnings Chart */}
           <div className="glass-card p-6">
             <h3 className="font-display font-semibold text-white mb-5">Monthly Earnings</h3>
@@ -154,32 +154,17 @@ const LenderDashboard = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                 <XAxis dataKey="month" tick={{ fill: '#6b7280', fontSize: 11 }} />
                 <YAxis tick={{ fill: '#6b7280', fontSize: 11 }}
-                  tickFormatter={(v) => `₹${v >= 1000 ? `${(v/1000).toFixed(0)}k` : v}`} />
+                  tickFormatter={(v) => `Rs. ${v >= 1000 ? `${(v/1000).toFixed(0)}k` : v}`} />
                 <Tooltip
                   contentStyle={{ background: '#1a2820', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#f3f4f6' }}
-                  formatter={(v) => [`₹${v.toLocaleString()}`, 'Earnings']}
+                  formatter={(v) => [`Rs. ${v.toLocaleString()}`, 'Earnings']}
                 />
                 <Bar dataKey="earnings" fill="#22c55e" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Booking Status Pie */}
-          <div className="glass-card p-6">
-            <h3 className="font-display font-semibold text-white mb-5">Booking Breakdown</h3>
-            {pieData.some((d) => d.value > 0) ? (
-              <ResponsiveContainer width="100%" height={220}>
-                <PieChart>
-                  <Pie data={pieData} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
-                    {pieData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-                  </Pie>
-                  <Tooltip contentStyle={{ background: '#1a2820', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#f3f4f6' }} />
-                </PieChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-[220px] flex items-center justify-center text-gray-500 text-sm">No booking data yet</div>
-            )}
-          </div>
+
         </div>
       )}
 
@@ -206,7 +191,7 @@ const LenderDashboard = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-display font-semibold text-white truncate">{item.title}</p>
-                  <p className="text-gray-400 text-sm">{item.category} · ₹{item.dailyRate?.toLocaleString()}/day</p>
+                  <p className="text-gray-400 text-sm">{item.category} · Rs. {item.dailyRate?.toLocaleString()}/day</p>
                   <span className={item.isAvailable ? 'badge-confirmed' : 'badge-cancelled'}>
                     {item.isAvailable ? 'Available' : 'Unavailable'}
                   </span>
