@@ -149,10 +149,10 @@ const MarketplacePage = () => {
               {/* Price range */}
               <div className="flex items-center gap-2 text-sm">
                 <input type="number" value={minRate} onChange={(e) => setMinRate(e.target.value)}
-                  className="form-input !py-1.5 !w-24 text-sm" placeholder="Min ₹" />
+                  className="form-input !py-1.5 !w-24 text-sm" placeholder="Min Rs." />
                 <span className="text-gray-500">–</span>
                 <input type="number" value={maxRate} onChange={(e) => setMaxRate(e.target.value)}
-                  className="form-input !py-1.5 !w-24 text-sm" placeholder="Max ₹" />
+                  className="form-input !py-1.5 !w-24 text-sm" placeholder="Max Rs." />
               </div>
               <button onClick={() => { setCategory('All'); setMinRate(''); setMaxRate(''); setSearchCity(''); setMapCenter(null); setPage(1); }}
                 className="text-xs text-gray-500 hover:text-red-400 flex items-center gap-1 transition-colors">
