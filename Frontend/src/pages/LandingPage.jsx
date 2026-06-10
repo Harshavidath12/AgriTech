@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Tractor, Leaf, MapPin, Calendar, Shield, ArrowRight, Star, Users } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const FEATURES = [
   {
@@ -35,15 +36,17 @@ const FEATURES = [
 ];
 
 const EQUIPMENT_CATEGORIES = [
-  { icon: '🚜', name: 'Tractors', count: '120+' },
-  { icon: '🛸', name: 'Drones', count: '85+' },
-  { icon: '🌾', name: 'Harvesters', count: '60+' },
-  { icon: '💧', name: 'Irrigators', count: '90+' },
-  { icon: '🌿', name: 'Sprayers', count: '75+' },
-  { icon: '🌱', name: 'Planters', count: '45+' },
+  { icon: '🚜', name: 'Tractors', filterParam: 'Tractor', count: '120+' },
+  { icon: '🛸', name: 'Drones', filterParam: 'Drone', count: '85+' },
+  { icon: '🌾', name: 'Harvesters', filterParam: 'Harvester', count: '60+' },
+  { icon: '💧', name: 'Irrigators', filterParam: 'Irrigator', count: '90+' },
+  { icon: '🌿', name: 'Sprayers', filterParam: 'Sprayer', count: '75+' },
+  { icon: '🌱', name: 'Planters', filterParam: 'Planter', count: '45+' },
 ];
 
 const LandingPage = () => {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen">
 
@@ -112,8 +115,8 @@ const LandingPage = () => {
             <p className="text-gray-400">Find the machinery your farm needs</p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {EQUIPMENT_CATEGORIES.map(({ icon, name, count }) => (
-              <Link key={name} to={`/marketplace?category=${name}`}
+            {EQUIPMENT_CATEGORIES.map(({ icon, name, filterParam, count }) => (
+              <Link key={name} to={`/marketplace?category=${filterParam}`}
                 className="glass-card p-4 text-center group hover:border-primary-500/30">
                 <div className="text-4xl mb-2 group-hover:scale-110 transition-transform">{icon}</div>
                 <p className="font-display font-semibold text-white text-sm">{name}</p>
@@ -202,29 +205,31 @@ const LandingPage = () => {
       </section>
 
       {/* ─── CTA ─────────────────────────────────────────────────────────── */}
-      <section className="py-20 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="glass-card p-12 border border-primary-500/20 relative overflow-hidden">
-            <div className="absolute inset-0 bg-green-glow" />
-            <div className="relative">
-              <h2 className="text-4xl font-display font-bold text-white mb-4">
-                Ready to Transform Your Farm?
-              </h2>
-              <p className="text-gray-400 mb-8">
-                Join thousands of farmers already sharing equipment and growing together.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/register?role=Lender" className="btn-earth !py-3.5 !px-8 flex items-center gap-2 justify-center">
-                  Start Lending Equipment
-                </Link>
-                <Link to="/register?role=Renter" className="btn-primary !py-3.5 !px-8 flex items-center gap-2 justify-center">
-                  Find Machinery to Rent
-                </Link>
+      {!user && (
+        <section className="py-20 px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="glass-card p-12 border border-primary-500/20 relative overflow-hidden">
+              <div className="absolute inset-0 bg-green-glow" />
+              <div className="relative">
+                <h2 className="text-4xl font-display font-bold text-white mb-4">
+                  Ready to Transform Your Farm?
+                </h2>
+                <p className="text-gray-400 mb-8">
+                  Join thousands of farmers already sharing equipment and growing together.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link to="/register?role=Lender" className="btn-earth !py-3.5 !px-8 flex items-center gap-2 justify-center">
+                    Start Lending Equipment
+                  </Link>
+                  <Link to="/register?role=Renter" className="btn-primary !py-3.5 !px-8 flex items-center gap-2 justify-center">
+                    Find Machinery to Rent
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ─── Footer ──────────────────────────────────────────────────────── */}
       <footer className="border-t border-white/5 py-8 px-4">
