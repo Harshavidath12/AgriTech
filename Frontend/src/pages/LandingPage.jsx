@@ -240,12 +240,12 @@ const LandingPage = () => {
             </div>
             <span className="font-display font-bold text-white text-sm">AgriTech</span>
           </div>
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-100 text-sm">
             © 2026 AgriTech. Peer-to-Peer Equipment Marketplace.
           </p>
-          <div className="flex gap-4 text-sm text-gray-500">
-            <Link to="/marketplace" className="hover:text-gray-300">Marketplace</Link>
-            <Link to="/register" className="hover:text-gray-300">Join</Link>
+          <div className="flex gap-4 text-sm text-gray-100">
+            <Link to="/marketplace" className="hover:text-primary-600">Marketplace</Link>
+            <Link to="/register" className="hover:text-primary-600">Join</Link>
           </div>
         </div>
       </footer>

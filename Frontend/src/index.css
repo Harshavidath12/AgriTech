@@ -16,9 +16,6 @@
 
   body {
     @apply bg-dark-900 text-gray-100 font-sans antialiased;
-    background-image: 
-      radial-gradient(ellipse at 20% 50%, rgba(34, 197, 94, 0.05) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, rgba(212, 131, 31, 0.05) 0%, transparent 50%);
     min-height: 100vh;
   }
 
@@ -47,7 +44,7 @@
 
   /* Primary button */
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-500 text-white font-semibold px-6 py-3 rounded-xl
+    @apply bg-primary-600 hover:bg-primary-500 text-[#ffffff] font-semibold px-6 py-3 rounded-xl
            transition-all duration-200 shadow-glow-green hover:shadow-lg
            disabled:opacity-50 disabled:cursor-not-allowed active:scale-95;
   }
@@ -61,7 +58,7 @@
 
   /* Earth/accent button */
   .btn-earth {
-    @apply bg-earth-600 hover:bg-earth-500 text-white font-semibold px-6 py-3 rounded-xl
+    @apply bg-earth-600 hover:bg-earth-500 text-[#ffffff] font-semibold px-6 py-3 rounded-xl
            transition-all duration-200 shadow-glow-earth hover:shadow-lg
            disabled:opacity-50 disabled:cursor-not-allowed active:scale-95;
   }
@@ -111,7 +108,7 @@
 
   .border-gradient {
     border: 1px solid transparent;
-    background: linear-gradient(#111a14, #111a14) padding-box,
+    background: linear-gradient(#ffffff, #ffffff) padding-box,
                 linear-gradient(135deg, #22c55e, #d4831f) border-box;
   }
 
