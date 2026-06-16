@@ -39,17 +39,18 @@ const EquipmentCard = ({ equipment, onBook }) => {
   } = equipment;
 
   const categoryIcon = CATEGORY_ICONS[category] || '⚙️';
+  const BACKEND_URL = 'https://agritech-backend-vl9t.onrender.com';
   const imageUrl = images?.[0] || null;
 
   return (
     <div className="glass-card overflow-hidden flex flex-col group cursor-pointer"
-         onClick={() => navigate(`/equipment/${_id}`)}>
+      onClick={() => navigate(`/equipment/${_id}`)}>
 
       {/* Image */}
       <div className="relative h-48 bg-dark-700 overflow-hidden">
         {imageUrl ? (
           <img
-            src={imageUrl}
+            src={`${BACKEND_URL}/${imageUrl}`}
             alt={title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />

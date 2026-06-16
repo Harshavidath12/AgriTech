@@ -47,9 +47,8 @@ router.post('/', upload.array('images', 5), (req, res) => {
 
     // Construct the URLs for the uploaded files
     const fileUrls = req.files.map(file => {
-      // In development, assume localhost:5000. 
-      // It's better to return a relative path or construct it using the request object.
-      return `${req.protocol}://${req.get('host')}/uploads/${file.filename}`;
+      // Permanent fix: Save only the path inside the database
+      return `uploads/${file.filename}`;
     });
 
     res.status(200).json({
