@@ -88,8 +88,6 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
     // Create a temporary, secure browser URL strictly for the UI preview element
     const newPreviews = files.map(file => URL.createObjectURL(file));
     setPreviewUrls((prev) => [...prev, ...newPreviews]);
-    
-    e.target.value = ''; // Reset input
   };
 
   const removeExistingImage = (index) => {
