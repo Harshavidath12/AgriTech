@@ -30,4 +30,4 @@ Thumbs.db
 
 # Misc
 .cache/
-Backend/uploads/
+#Backend/uploads/
