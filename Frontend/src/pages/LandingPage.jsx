@@ -41,7 +41,7 @@ const EQUIPMENT_CATEGORIES = [
   { icon: '🌾', name: 'Harvesters', filterParam: 'Harvester', count: '60+' },
   { icon: '💧', name: 'Irrigators', filterParam: 'Irrigator', count: '90+' },
   { icon: '🌿', name: 'Sprayers', filterParam: 'Sprayer', count: '75+' },
-  { icon: '🌱', name: 'Planters', filterParam: 'Planter', count: '45+' },
+  { icon: '🪚', name: 'Chainsaws', filterParam: 'Chainsaw', count: '45+' },
 ];
 
 const LandingPage = () => {

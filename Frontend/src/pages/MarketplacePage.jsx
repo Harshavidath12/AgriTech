@@ -8,7 +8,7 @@ import EquipmentMap from '../components/equipment/EquipmentMap';
 import BookingModal from '../components/booking/BookingModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-const CATEGORIES = ['All', 'Tractor', 'Drone', 'Harvester', 'Planter', 'Irrigator', 'Sprayer', 'Other'];
+const CATEGORIES = ['All', 'Tractor', 'Drone', 'Harvester', 'Chainsaw', 'Irrigator', 'Sprayer', 'Other'];
 const RADIUS_OPTIONS = [10, 25, 50, 100, 200];
 
 const MarketplacePage = () => {

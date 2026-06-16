@@ -12,7 +12,7 @@ import { useAuth } from '../context/AuthContext';
 
 const CATEGORY_ICONS = {
   Tractor: '🚜', Drone: '🛸', Harvester: '🌾',
-  Planter: '🌱', Irrigator: '💧', Sprayer: '🌿', Other: '⚙️',
+  Chainsaw: '🪚', Irrigator: '💧', Sprayer: '🌿', Other: '⚙️',
 };
 
 const EquipmentDetailPage = () => {

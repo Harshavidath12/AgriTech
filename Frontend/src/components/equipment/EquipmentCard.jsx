@@ -9,7 +9,7 @@ const CATEGORY_ICONS = {
   Tractor: '🚜',
   Drone: '🛸',
   Harvester: '🌾',
-  Planter: '🌱',
+  Chainsaw: '🪚',
   Irrigator: '💧',
   Sprayer: '🌿',
   Other: '⚙️',

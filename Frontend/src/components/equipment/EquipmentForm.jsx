@@ -5,7 +5,7 @@ import axiosInstance from '../../api/axiosInstance';
 import LoadingSpinner from '../LoadingSpinner';
 import { MapPin, DollarSign, Tag, FileText, Plus, X } from 'lucide-react';
 
-const CATEGORIES = ['Tractor', 'Drone', 'Harvester', 'Planter', 'Irrigator', 'Sprayer', 'Other'];
+const CATEGORIES = ['Tractor', 'Drone', 'Harvester', 'Chainsaw', 'Irrigator', 'Sprayer', 'Other'];
 
 /**
  * EquipmentForm — create or edit an equipment listing (Lender only).

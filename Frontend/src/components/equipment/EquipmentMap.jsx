@@ -54,7 +54,7 @@ const NoKeyFallback = ({ equipment, onMarkerClick }) => (
                               flex items-center justify-center flex-shrink-0 text-lg">
                 {item.category === 'Drone' ? '🛸' :
                  item.category === 'Harvester' ? '🌾' :
-                 item.category === 'Planter' ? '🌱' :
+                 item.category === 'Chainsaw' ? '🪚' :
                  item.category === 'Irrigator' ? '💧' :
                  item.category === 'Sprayer' ? '🌿' : '🚜'}
               </div>
@@ -165,7 +165,7 @@ const EquipmentMap = ({ equipment = [], center, radius = 50, onMarkerClick }) =>
     switch (category) {
       case 'Drone': return '🛸';
       case 'Harvester': return '🌾';
-      case 'Planter': return '🌱';
+      case 'Chainsaw': return '🪚';
       case 'Irrigator': return '💧';
       case 'Sprayer': return '🌿';
       default: return '🚜';
