@@ -22,8 +22,8 @@ const StatCard = ({ icon: Icon, label, value, sub, color = 'primary' }) => (
       <div className={`w-9 h-9 rounded-xl flex items-center justify-center
         ${color === 'primary' ? 'bg-primary-500/15 text-primary-400' :
           color === 'earth' ? 'bg-earth-500/15 text-earth-400' :
-          color === 'blue' ? 'bg-blue-500/15 text-blue-400' :
-          'bg-purple-500/15 text-purple-400'}`}>
+            color === 'blue' ? 'bg-blue-500/15 text-blue-400' :
+              'bg-purple-500/15 text-purple-400'}`}>
         <Icon className="w-4 h-4" />
       </div>
     </div>
@@ -85,6 +85,7 @@ const LenderDashboard = () => {
 
   const { stats, monthlyEarnings, statusBreakdown, recentBookings, equipment } = dashData || {};
   const pieData = Object.entries(statusBreakdown || {}).map(([name, value]) => ({ name, value }));
+  const BACKEND_URL = 'https://agritech-backend-vl9t.onrender.com';
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -133,11 +134,10 @@ const LenderDashboard = () => {
         {['overview', 'bookings'].map((tab) => (
           <button key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-5 py-2 rounded-lg text-sm font-medium capitalize transition-all ${
-              activeTab === tab
+            className={`px-5 py-2 rounded-lg text-sm font-medium capitalize transition-all ${activeTab === tab
                 ? 'bg-primary-600 text-white shadow-glow-green'
                 : 'text-gray-400 hover:text-gray-200'
-            }`}>
+              }`}>
             {tab}
           </button>
         ))}
@@ -154,7 +154,7 @@ const LenderDashboard = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                 <XAxis dataKey="month" tick={{ fill: '#6b7280', fontSize: 11 }} />
                 <YAxis tick={{ fill: '#6b7280', fontSize: 11 }}
-                  tickFormatter={(v) => `Rs. ${v >= 1000 ? `${(v/1000).toFixed(0)}k` : v}`} />
+                  tickFormatter={(v) => `Rs. ${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`} />
                 <Tooltip
                   contentStyle={{ background: '#1a2820', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#f3f4f6' }}
                   formatter={(v) => [`Rs. ${v.toLocaleString()}`, 'Earnings']}
@@ -185,7 +185,7 @@ const LenderDashboard = () => {
               <div key={item._id} className="glass-card p-4 flex items-center gap-4">
                 <div className="w-16 h-16 rounded-xl bg-dark-700 flex-shrink-0 overflow-hidden">
                   {item.images?.[0]
-                    ? <img src={item.images[0]} alt={item.title} className="w-full h-full object-cover" />
+                    ? <img src={`${BACKEND_URL}/${item.images[0]}`} alt={item.title} className="w-full h-full object-cover" />
                     : <div className="w-full h-full flex items-center justify-center text-2xl">🚜</div>
                   }
                 </div>
