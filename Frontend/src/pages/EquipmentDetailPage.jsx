@@ -55,6 +55,7 @@ const EquipmentDetailPage = () => {
   } = equipment;
 
   const categoryIcon = CATEGORY_ICONS[category] || '⚙️';
+  const BACKEND_URL = 'https://agritech-backend-vl9t.onrender.com';
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
@@ -74,7 +75,7 @@ const EquipmentDetailPage = () => {
             {/* Main image */}
             <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-dark-700">
               {images?.length > 0 ? (
-                <img src={images[activeImage]} alt={title}
+                <img src={`${BACKEND_URL}/${images[activeImage]}`} alt={title}
                   className="w-full h-full object-cover transition-all duration-300" />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center">
@@ -90,7 +91,7 @@ const EquipmentDetailPage = () => {
                   <button key={i} onClick={() => setActiveImage(i)}
                     className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all
                       ${activeImage === i ? 'border-primary-500' : 'border-transparent opacity-60 hover:opacity-100'}`}>
-                    <img src={img} alt={`${title} ${i + 1}`} className="w-full h-full object-cover" />
+                    <img src={`${BACKEND_URL}/${img}`} alt={`${title} ${i + 1}`} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
