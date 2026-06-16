@@ -20,7 +20,7 @@ const equipmentSchema = new mongoose.Schema(
     category: {
       type: String,
       required: [true, 'Category is required'],
-      enum: ['Tractor', 'Drone', 'Harvester', 'Planter', 'Irrigator', 'Sprayer', 'Other'],
+      enum: ['Tractor', 'Drone', 'Harvester', 'Chainsaw', 'Irrigator', 'Sprayer', 'Other'],
     },
     dailyRate: {
       type: Number,
