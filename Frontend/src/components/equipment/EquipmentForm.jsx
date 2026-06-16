@@ -18,7 +18,9 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
   const isEditMode = !!existing;
   const [loading, setLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState(existing?.images || []);
-  const [imageInput, setImageInput] = useState('');
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
+  const BACKEND_URL = 'https://agritech-backend-vl9t.onrender.com';
 
   const {
     register,
@@ -56,6 +58,8 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
         state: existing.location?.state || '',
       });
       setImageUrls(existing.images || []);
+      setSelectedFiles([]);
+      setPreviewUrls([]);
     } else {
       reset({
         title: '',
@@ -69,42 +73,51 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
         state: '',
       });
       setImageUrls([]);
+      setSelectedFiles([]);
+      setPreviewUrls([]);
     }
   }, [existing, reset]);
 
-  const [uploading, setUploading] = useState(false);
-
-  const handleFileUpload = async (e) => {
-    const files = e.target.files;
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
     if (!files || files.length === 0) return;
 
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append('images', files[i]);
-    }
+    // Save the actual file object for the final form submission upload
+    setSelectedFiles((prev) => [...prev, ...files]);
 
-    setUploading(true);
-    try {
-      const { data } = await axiosInstance.post('/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      setImageUrls((prev) => [...prev, ...data.urls]);
-      toast.success('Images uploaded successfully');
-    } catch (err) {
-      toast.error('Failed to upload images');
-    } finally {
-      setUploading(false);
-      e.target.value = ''; // Reset input
-    }
+    // Create a temporary, secure browser URL strictly for the UI preview element
+    const newPreviews = files.map(file => URL.createObjectURL(file));
+    setPreviewUrls((prev) => [...prev, ...newPreviews]);
+    
+    e.target.value = ''; // Reset input
   };
 
-  const removeImage = (index) => {
+  const removeExistingImage = (index) => {
     setImageUrls(imageUrls.filter((_, i) => i !== index));
+  };
+
+  const removePreviewImage = (index) => {
+    setSelectedFiles(selectedFiles.filter((_, i) => i !== index));
+    setPreviewUrls(previewUrls.filter((_, i) => i !== index));
   };
 
   const onSubmit = async (data) => {
     setLoading(true);
     try {
+      let newlyUploadedUrls = [];
+
+      if (selectedFiles.length > 0) {
+        const formData = new FormData();
+        selectedFiles.forEach((file) => formData.append('images', file));
+        
+        const { data: uploadData } = await axiosInstance.post('/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        newlyUploadedUrls = uploadData.urls;
+      }
+
+      const finalImages = [...imageUrls, ...newlyUploadedUrls];
+
       const payload = {
         title: data.title,
         description: data.description,
@@ -112,7 +125,7 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
         dailyRate: parseFloat(data.dailyRate),
         maximumRentalDays: parseInt(data.maximumRentalDays),
         depositAmount: parseFloat(data.depositAmount) || 0,
-        images: imageUrls,
+        images: finalImages,
         location: {
           type: 'Point',
           coordinates: [0, 0], // [lng, lat] defaulted to 0 since location search is city-based
@@ -220,18 +233,26 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
             type="file"
             multiple
             accept="image/*"
-            onChange={handleFileUpload}
-            disabled={uploading}
+            onChange={handleFileChange}
+            disabled={loading}
             className="form-input flex-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-600 file:text-white hover:file:bg-primary-700"
           />
-          {uploading && <div className="flex items-center text-primary-400 text-sm"><LoadingSpinner size="sm" className="mr-2" /> Uploading...</div>}
         </div>
-        {imageUrls.length > 0 && (
+        
+        {(imageUrls.length > 0 || previewUrls.length > 0) && (
           <div className="flex flex-wrap gap-3">
             {imageUrls.map((url, i) => (
-              <div key={i} className="relative w-24 h-24 rounded-lg overflow-hidden border border-white/10 group">
-                <img src={url} alt={`Upload ${i}`} className="w-full h-full object-cover" />
-                <button type="button" onClick={() => removeImage(i)} className="absolute top-1 right-1 bg-black/60 p-1 rounded-full text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div key={`existing-${i}`} className="relative w-24 h-24 rounded-lg overflow-hidden border border-white/10 group">
+                <img src={`${BACKEND_URL}/${url}`} alt={`Existing ${i}`} className="w-full h-full object-cover" />
+                <button type="button" onClick={() => removeExistingImage(i)} className="absolute top-1 right-1 bg-black/60 p-1 rounded-full text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+            {previewUrls.map((url, i) => (
+              <div key={`preview-${i}`} className="relative w-24 h-24 rounded-lg overflow-hidden border border-primary-500/50 group">
+                <img src={url} alt={`Upload preview ${i}`} className="w-full h-full object-cover" />
+                <button type="button" onClick={() => removePreviewImage(i)} className="absolute top-1 right-1 bg-black/60 p-1 rounded-full text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
                   <X className="w-4 h-4" />
                 </button>
               </div>
