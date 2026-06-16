@@ -20,6 +20,7 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
   const [imageUrls, setImageUrls] = useState(existing?.images || []);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
+  const [fileName, setFileName] = useState('No file chosen');
   const BACKEND_URL = 'https://agritech-backend-vl9t.onrender.com';
 
   const {
@@ -60,6 +61,7 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
       setImageUrls(existing.images || []);
       setSelectedFiles([]);
       setPreviewUrls([]);
+      setFileName('No file chosen');
     } else {
       reset({
         title: '',
@@ -75,12 +77,16 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
       setImageUrls([]);
       setSelectedFiles([]);
       setPreviewUrls([]);
+      setFileName('No file chosen');
     }
   }, [existing, reset]);
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {
+      setFileName('No file chosen');
+      return;
+    }
 
     // Save the actual file object for the final form submission upload
     setSelectedFiles((prev) => [...prev, ...files]);
@@ -88,6 +94,9 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
     // Create a temporary, secure browser URL strictly for the UI preview element
     const newPreviews = files.map(file => URL.createObjectURL(file));
     setPreviewUrls((prev) => [...prev, ...newPreviews]);
+    
+    // Update the file name state
+    setFileName(files.length > 1 ? `${files.length} files selected` : files[0].name);
   };
 
   const removeExistingImage = (index) => {
@@ -226,15 +235,20 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
       {/* Images */}
       <div>
         <label className="form-label">Equipment Images</label>
-        <div className="flex gap-2 mb-3">
+        <div className="flex items-center gap-3 mb-3">
+          <label htmlFor="file-upload" className="btn-primary cursor-pointer !py-2 !px-4 !text-sm">
+            Choose Files
+          </label>
           <input
+            id="file-upload"
             type="file"
             multiple
             accept="image/*"
             onChange={handleFileChange}
             disabled={loading}
-            className="form-input flex-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-600 file:text-white hover:file:bg-primary-700"
+            className="hidden"
           />
+          <span className="text-gray-500 text-sm">{fileName}</span>
         </div>
         
         {(imageUrls.length > 0 || previewUrls.length > 0) && (
