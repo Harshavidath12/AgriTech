@@ -50,7 +50,7 @@ const EquipmentCard = ({ equipment, onBook }) => {
       <div className="relative h-48 bg-dark-700 overflow-hidden">
         {imageUrl ? (
           <img
-            src={`${BACKEND_URL}/${imageUrl}`}
+            src={imageUrl}
             alt={title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
