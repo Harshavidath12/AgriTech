@@ -185,7 +185,7 @@ const LenderDashboard = () => {
               <div key={item._id} className="glass-card p-4 flex items-center gap-4">
                 <div className="w-16 h-16 rounded-xl bg-dark-700 flex-shrink-0 overflow-hidden">
                   {item.images?.[0]
-                    ? <img src={`${BACKEND_URL}/${item.images[0]}`} alt={item.title} className="w-full h-full object-cover" />
+                    ? <img src={item.images[0]} alt={item.title} className="w-full h-full object-cover" />
                     : <div className="w-full h-full flex items-center justify-center text-2xl">🚜</div>
                   }
                 </div>
