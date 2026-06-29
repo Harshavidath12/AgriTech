@@ -255,7 +255,7 @@ const EquipmentForm = ({ existing, onSuccess, onCancel }) => {
           <div className="flex flex-wrap gap-3">
             {imageUrls.map((url, i) => (
               <div key={`existing-${i}`} className="relative w-24 h-24 rounded-lg overflow-hidden border border-white/10 group">
-                <img src={`${BACKEND_URL}/${url}`} alt={`Existing ${i}`} className="w-full h-full object-cover" />
+                <img src={url} alt={`Existing ${i}`} className="w-full h-full object-cover" />
                 <button type="button" onClick={() => removeExistingImage(i)} className="absolute top-1 right-1 bg-black/60 p-1 rounded-full text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
                   <X className="w-4 h-4" />
                 </button>
