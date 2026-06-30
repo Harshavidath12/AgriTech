@@ -10,6 +10,7 @@ import DashboardPage from './pages/DashboardPage';
 import CheckoutPage from './pages/CheckoutPage';
 import EquipmentDetailPage from './pages/EquipmentDetailPage';
 import LoadingSpinner from './components/LoadingSpinner';
+import Footer from './components/Footer';
 
 function App() {
   const { loading } = useAuth();
@@ -25,37 +26,40 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-dark-900">
+      <div className="min-h-screen flex flex-col bg-dark-900">
         <Navbar />
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/marketplace" element={<MarketplacePage />} />
-          <Route path="/equipment/:id" element={<EquipmentDetailPage />} />
+        <div className="flex-1">
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/marketplace" element={<MarketplacePage />} />
+            <Route path="/equipment/:id" element={<EquipmentDetailPage />} />
 
-          {/* Protected routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/checkout/:bookingId"
-            element={
-              <ProtectedRoute>
-                <CheckoutPage />
-              </ProtectedRoute>
-            }
-          />
+            {/* Protected routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/checkout/:bookingId"
+              element={
+                <ProtectedRoute>
+                  <CheckoutPage />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+        <Footer />
       </div>
     </BrowserRouter>
   );

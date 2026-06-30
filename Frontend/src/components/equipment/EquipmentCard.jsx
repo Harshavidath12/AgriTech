@@ -64,8 +64,8 @@ const EquipmentCard = ({ equipment, onBook }) => {
         {/* Availability badge */}
         <div className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm
           ${isAvailable
-            ? 'bg-primary-500/20 text-primary-400 border border-primary-500/30'
-            : 'bg-red-500/20 text-red-400 border border-red-500/30'}`}>
+            ? 'bg-primary-500/80 text-white border border-primary-500/30'
+            : 'bg-red-500/80 text-white border border-red-500/30'}`}>
           {isAvailable ? '● Available' : '● Booked'}
         </div>
 
