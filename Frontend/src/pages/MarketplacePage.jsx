@@ -18,12 +18,7 @@ const MarketplacePage = () => {
   const [selectedEquipment, setSelectedEquipment] = useState(null);
   const [bookedDates, setBookedDates] = useState([]);
   const [showBookingModal, setShowBookingModal] = useState(false);
-  const [viewMode, setViewMode] = useState(
-    // Default to list view if Maps API key isn't configured yet
-    (import.meta.env.VITE_GOOGLE_MAPS_API_KEY &&
-     import.meta.env.VITE_GOOGLE_MAPS_API_KEY !== 'YOUR_GOOGLE_MAPS_API_KEY_HERE')
-      ? 'split' : 'list'
-  );
+  const [viewMode, setViewMode] = useState('list');
   const [showFilters, setShowFilters] = useState(false);
 
   // ─── Search State ─────────────────────────────────────────────────────────
