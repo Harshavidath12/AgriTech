@@ -231,24 +231,7 @@ const LandingPage = () => {
         </section>
       )}
 
-      {/* ─── Footer ──────────────────────────────────────────────────────── */}
-      <footer className="border-t border-white/5 py-8 px-4">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary-600 flex items-center justify-center">
-              <Tractor className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-display font-bold text-white text-sm">AgriTech</span>
-          </div>
-          <p className="text-gray-100 text-sm">
-            © 2026 AgriTech. Peer-to-Peer Equipment Marketplace.
-          </p>
-          <div className="flex gap-4 text-sm text-gray-100">
-            <Link to="/marketplace" className="hover:text-primary-600">Marketplace</Link>
-            <Link to="/register" className="hover:text-primary-600">Join</Link>
-          </div>
-        </div>
-      </footer>
+
     </div>
   );
 };

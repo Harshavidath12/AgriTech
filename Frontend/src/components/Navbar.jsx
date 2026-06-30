@@ -81,8 +81,8 @@ const Navbar = () => {
               to="/marketplace"
               className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
                 ${isActive('/marketplace')
-                  ? 'bg-primary-600/20 text-primary-400'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'}`}
+                  ? 'bg-primary-600/30 text-primary-900 font-bold'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-primary-500/10'}`}
             >
               <ShoppingBag className="w-4 h-4" />
               Marketplace
@@ -93,8 +93,8 @@ const Navbar = () => {
                 to="/dashboard"
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
                   ${isActive('/dashboard')
-                    ? 'bg-primary-600/20 text-primary-400'
-                    : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'}`}
+                    ? 'bg-primary-600/30 text-primary-900 font-bold'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-primary-500/10'}`}
               >
                 <LayoutDashboard className="w-4 h-4" />
                 Dashboard
