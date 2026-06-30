@@ -161,7 +161,11 @@ const RegisterPage = () => {
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <input id="reg-confirm" name="confirmPassword" type={showPassword ? 'text' : 'password'}
                   value={formData.confirmPassword} onChange={handleChange} required
-                  className="form-input pl-10" placeholder="Re-enter password" />
+                  className="form-input pl-10 pr-10" placeholder="Re-enter password" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300">
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
