@@ -178,7 +178,7 @@ const EquipmentDetailPage = () => {
                 <p className="text-white font-medium">{location.address}</p>
                 {location.city && <p className="text-gray-400 text-sm">{location.city}, {location.state}</p>}
                 {location.coordinates && (
-                  <p className="text-gray-600 text-xs mt-1">
+                  <p className="text-primary-600 text-xs mt-1 font-medium">
                     {location.coordinates[1].toFixed(4)}°N, {location.coordinates[0].toFixed(4)}°E
                   </p>
                 )}
