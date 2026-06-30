@@ -19,13 +19,21 @@ const generateToken = (id) => {
  */
 const register = async (req, res, next) => {
   try {
-    const { name, email, password, role, phone } = req.body;
+    const { name, email, password, confirmPassword, role, phone } = req.body;
 
     // Validate required fields
     if (!name || !email || !password || !role) {
       return res.status(400).json({
         success: false,
         message: 'Please provide name, email, password, and role',
+      });
+    }
+
+    // Validate confirm password
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Passwords do not match',
       });
     }
 
