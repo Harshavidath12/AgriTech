@@ -99,7 +99,7 @@ const searchEquipment = async (req, res, next) => {
  */
 const getAllEquipment = async (req, res, next) => {
   try {
-    const { category, search, page = 1, limit = 12 } = req.query;
+    const { category, search, minRate, maxRate, page = 1, limit = 12 } = req.query;
     const filter = { isAvailable: true };
     if (category && category !== 'All') filter.category = category;
     if (search) {
@@ -107,6 +107,11 @@ const getAllEquipment = async (req, res, next) => {
         { title: { $regex: search, $options: 'i' } },
         { 'location.city': { $regex: search, $options: 'i' } }
       ];
+    }
+    if (minRate || maxRate) {
+      filter.dailyRate = {};
+      if (minRate) filter.dailyRate.$gte = parseFloat(minRate);
+      if (maxRate) filter.dailyRate.$lte = parseFloat(maxRate);
     }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
