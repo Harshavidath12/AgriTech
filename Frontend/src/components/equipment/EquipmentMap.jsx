@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   GoogleMap,
   useJsApiLoader,
@@ -100,6 +101,18 @@ const MAP_STYLES = [
   { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#1a2820' }] },
 ];
 
+const DEFAULT_CENTER = { lat: 20.5937, lng: 78.9629 };
+
+const MAP_OPTIONS = {
+  styles: MAP_STYLES,
+  disableDefaultUI: false,
+  zoomControl: true,
+  mapTypeControl: false,
+  streetViewControl: false,
+  fullscreenControl: true,
+  backgroundColor: '#1a2820',
+};
+
 /**
  * EquipmentMap — Google Maps component displaying equipment as pins.
  * Shows a radius circle around the search center point.
@@ -120,7 +133,7 @@ const EquipmentMap = ({ equipment = [], center, radius = 50, onMarkerClick }) =>
     libraries: MAP_LIBRARIES,
   });
 
-  const mapCenter = center || { lat: 20.5937, lng: 78.9629 }; // Default: India center
+  const mapCenter = center || DEFAULT_CENTER;
 
   const onLoad = useCallback((mapInstance) => {
     setMap(mapInstance);
@@ -178,15 +191,7 @@ const EquipmentMap = ({ equipment = [], center, radius = 50, onMarkerClick }) =>
       center={mapCenter}
       zoom={center ? 9 : 5}
       onLoad={onLoad}
-      options={{
-        styles: MAP_STYLES,
-        disableDefaultUI: false,
-        zoomControl: true,
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: true,
-        backgroundColor: '#1a2820',
-      }}
+      options={MAP_OPTIONS}
     >
       {/* Radius circle around search center */}
       {center && radius && (
@@ -246,11 +251,13 @@ const EquipmentMap = ({ equipment = [], center, radius = 50, onMarkerClick }) =>
           onCloseClick={() => setSelectedItem(null)}
         >
           <div className="p-1 min-w-[180px]">
-            {selectedItem.images && selectedItem.images[0] && (
-              <img src={selectedItem.images[0]} alt={selectedItem.title} className="w-full h-28 object-cover rounded-md mb-2 bg-gray-100" />
-            )}
-            <p className="font-semibold text-white text-sm mb-1">{selectedItem.title}</p>
-            <p className="text-gray-200 text-xs mb-2">{selectedItem.category}</p>
+            <Link to={`/equipment/${selectedItem._id}`} className="block group">
+              {selectedItem.images && selectedItem.images[0] && (
+                <img src={selectedItem.images[0]} alt={selectedItem.title} className="w-full h-28 object-cover rounded-md mb-2 bg-gray-100 group-hover:opacity-90 transition-opacity" />
+              )}
+              <p className="font-semibold text-white text-sm mb-1 group-hover:text-primary-400 transition-colors">{selectedItem.title}</p>
+              <p className="text-gray-200 text-xs mb-2">{selectedItem.category}</p>
+            </Link>
             <p className="text-primary-700 font-bold text-sm mb-3">
               ₹{selectedItem.dailyRate?.toLocaleString()}/day
             </p>
