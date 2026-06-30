@@ -28,7 +28,7 @@ const MarketplacePage = () => {
 
   // ─── Search State ─────────────────────────────────────────────────────────
   const [category, setCategory] = useState(searchParams.get('category') || 'All');
-  const [searchCity, setSearchCity] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [minRate, setMinRate] = useState('');
   const [maxRate, setMaxRate] = useState('');
   const [mapCenter, setMapCenter] = useState(null);
@@ -45,8 +45,8 @@ const MarketplacePage = () => {
 
       let url = '/equipment';
 
-      if (searchCity) {
-        params.city = searchCity;
+      if (searchQuery) {
+        params.search = searchQuery;
       }
 
       const { data } = await axiosInstance.get(url, { params });
@@ -57,7 +57,7 @@ const MarketplacePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [category, searchCity, minRate, maxRate, page]);
+  }, [category, searchQuery, minRate, maxRate, page]);
 
   useEffect(() => { fetchEquipment(); }, [fetchEquipment]);
 
@@ -86,15 +86,15 @@ const MarketplacePage = () => {
             {/* City search */}
             <div className="flex items-center gap-2 flex-1 min-w-[200px]">
               <div className="relative flex-1">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <input
-                  id="search-city"
+                  id="search-input"
                   type="text"
-                  value={searchCity}
-                  onChange={(e) => setSearchCity(e.target.value)}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && (setPage(1), fetchEquipment())}
                   className="form-input pl-9 !py-2 text-sm"
-                  placeholder="Enter city or location..."
+                  placeholder="Search by equipment title or city..."
                 />
               </div>
             </div>
@@ -154,7 +154,7 @@ const MarketplacePage = () => {
                 <input type="number" value={maxRate} onChange={(e) => setMaxRate(e.target.value)}
                   className="form-input !py-1.5 !w-24 text-sm" placeholder="Max Rs." />
               </div>
-              <button onClick={() => { setCategory('All'); setMinRate(''); setMaxRate(''); setSearchCity(''); setMapCenter(null); setPage(1); }}
+              <button onClick={() => { setCategory('All'); setMinRate(''); setMaxRate(''); setSearchQuery(''); setMapCenter(null); setPage(1); }}
                 className="text-xs text-gray-500 hover:text-red-400 flex items-center gap-1 transition-colors">
                 <X className="w-3 h-3" /> Clear
               </button>
@@ -169,7 +169,7 @@ const MarketplacePage = () => {
           <p className="text-gray-400 text-sm">
             {loading ? 'Searching...' : `${pagination.total || equipment.length} equipment found`}
             {category !== 'All' && <span className="ml-2 text-primary-400">· {category}</span>}
-            {searchCity && <span className="ml-2 text-earth-400">· In {searchCity}</span>}
+            {searchQuery && <span className="ml-2 text-earth-400">· "{searchQuery}"</span>}
           </p>
         </div>
       </div>

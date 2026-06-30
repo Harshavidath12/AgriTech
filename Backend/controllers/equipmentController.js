@@ -99,11 +99,14 @@ const searchEquipment = async (req, res, next) => {
  */
 const getAllEquipment = async (req, res, next) => {
   try {
-    const { category, city, page = 1, limit = 12 } = req.query;
+    const { category, search, page = 1, limit = 12 } = req.query;
     const filter = { isAvailable: true };
     if (category && category !== 'All') filter.category = category;
-    if (city) {
-      filter['location.city'] = { $regex: city, $options: 'i' };
+    if (search) {
+      filter.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { 'location.city': { $regex: search, $options: 'i' } }
+      ];
     }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
