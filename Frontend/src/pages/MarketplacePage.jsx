@@ -76,7 +76,7 @@ const MarketplacePage = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-64px)] flex flex-col">
+    <div className="flex flex-col min-h-[calc(100vh-64px)]">
 
       {/* ─── Search Bar ───────────────────────────────────────────────────── */}
       <div className="flex-shrink-0 bg-dark-900/90 backdrop-blur-xl border-b border-white/5 px-4 py-3">
@@ -175,11 +175,11 @@ const MarketplacePage = () => {
       </div>
 
       {/* ─── Main Content ─────────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-hidden max-w-7xl mx-auto w-full px-4 pb-4">
+      <div className="flex-1 max-w-7xl mx-auto w-full px-4 pb-4">
 
         {/* SPLIT VIEW */}
         {viewMode === 'split' && (
-          <div className="h-full flex gap-4 pt-4">
+          <div className="h-[calc(100vh-220px)] min-h-[500px] flex gap-4 pt-4">
             {/* Equipment Grid */}
             <div className="w-[45%] overflow-y-auto pr-2">
               {loading ? (
@@ -215,7 +215,7 @@ const MarketplacePage = () => {
 
         {/* LIST ONLY VIEW */}
         {viewMode === 'list' && (
-          <div className="h-full overflow-y-auto pt-4">
+          <div className="pt-4">
             {loading ? (
               <div className="flex items-center justify-center h-40"><LoadingSpinner size="lg" /></div>
             ) : (
@@ -230,7 +230,7 @@ const MarketplacePage = () => {
 
         {/* MAP ONLY VIEW */}
         {viewMode === 'map' && (
-          <div className="h-full pt-4">
+          <div className="h-[calc(100vh-220px)] min-h-[500px] pt-4">
             <EquipmentMap
               equipment={equipment}
               center={mapCenter}
