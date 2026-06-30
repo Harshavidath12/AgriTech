@@ -204,8 +204,16 @@ const EquipmentMap = ({ equipment = [], center, radius = 50, onMarkerClick }) =>
       )}
 
       {/* Equipment markers */}
-      {equipment.map((item) => {
-        const [lng, lat] = item.location.coordinates;
+      {equipment.map((item, index) => {
+        let [lng, lat] = item.location?.coordinates || [0, 0];
+        
+        // Add a small deterministic offset (jitter) so items at the exact same address don't completely overlap
+        if (item._id) {
+          const hash = item._id.charCodeAt(item._id.length - 1) + item._id.charCodeAt(item._id.length - 2);
+          lat += Math.sin(hash) * 0.0004;
+          lng += Math.cos(hash) * 0.0004;
+        }
+
         return (
           <Marker
             key={item._id}
@@ -238,9 +246,12 @@ const EquipmentMap = ({ equipment = [], center, radius = 50, onMarkerClick }) =>
           onCloseClick={() => setSelectedItem(null)}
         >
           <div className="p-1 min-w-[180px]">
-            <p className="font-semibold text-gray-900 text-sm mb-1">{selectedItem.title}</p>
-            <p className="text-gray-600 text-xs mb-2">{selectedItem.category}</p>
-            <p className="text-green-700 font-bold text-sm mb-3">
+            {selectedItem.images && selectedItem.images[0] && (
+              <img src={selectedItem.images[0]} alt={selectedItem.title} className="w-full h-28 object-cover rounded-md mb-2 bg-gray-100" />
+            )}
+            <p className="font-semibold text-white text-sm mb-1">{selectedItem.title}</p>
+            <p className="text-gray-200 text-xs mb-2">{selectedItem.category}</p>
+            <p className="text-primary-700 font-bold text-sm mb-3">
               ₹{selectedItem.dailyRate?.toLocaleString()}/day
             </p>
             {!isLender && (
